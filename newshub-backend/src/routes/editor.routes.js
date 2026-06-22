@@ -10,7 +10,7 @@ import {
 
 const router = express.Router();
 
-router.get("/", authMiddleware, permit("admin"), getEditorsController);
+router.get("/articles", authMiddleware, permit("admin"), getEditorsController);
 router.post(
   "/create-editor",
   authMiddleware,

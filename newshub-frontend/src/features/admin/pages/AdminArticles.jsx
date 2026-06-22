@@ -37,6 +37,7 @@ export default function AdminArticles() {
     image: "",
     section: "latest",
     status: "draft",
+    is_breaking: false,
   });
 
   // Reset form
@@ -50,6 +51,7 @@ export default function AdminArticles() {
       image: "",
       section: "latest",
       status: "draft",
+      is_breaking: false,
     });
 
     setShowForm(false);
@@ -77,6 +79,7 @@ export default function AdminArticles() {
     formData.append("content", form.content);
     formData.append("status", status);
     formData.append("section", form.section);
+    formData.append("is_breaking", form.is_breaking);
 
     if (form.file) {
       formData.append("image", form.file);
@@ -141,6 +144,7 @@ export default function AdminArticles() {
               image: "",
               section: "latest",
               status: "draft",
+              is_breaking: false,
             });
             setShowForm(true);
           }}
@@ -227,6 +231,7 @@ export default function AdminArticles() {
                           image: item.image,
                           section: item.section ?? "latest",
                           status: item.status ?? "draft",
+                          is_breaking: item.is_breaking ?? false,
                         });
                         setEditingId(item.id);
                         setShowForm(true);
@@ -288,6 +293,7 @@ export default function AdminArticles() {
                 onChange={(e) => setForm({ ...form, category: e.target.value })}
                 className="w-full border rounded-lg p-2  focus:outline-none focus:ring"
               />
+
               <select
                 value={form.section}
                 onChange={(e) => setForm({ ...form, section: e.target.value })}
@@ -297,7 +303,24 @@ export default function AdminArticles() {
                 <option value="featured">Featured</option>
                 <option value="secondary">Secondary</option>
                 <option value="trending">Trending</option>
+                <option value="breaking">BreakingNews</option>
               </select>
+              {/* ✅ PUT BREAKING NEWS HERE */}
+              <div className="flex items-center gap-3">
+                <input
+                  type="checkbox"
+                  checked={form.is_breaking}
+                  onChange={(e) =>
+                    setForm({
+                      ...form,
+                      is_breaking: e.target.checked,
+                    })
+                  }
+                  className="h-4 w-4"
+                />
+
+                <label className="font-medium">Mark as Breaking News</label>
+              </div>
               <input
                 type="file"
                 accept="image/*"

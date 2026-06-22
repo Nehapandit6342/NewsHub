@@ -70,9 +70,6 @@ export default function Navbar() {
           </div>
 
           {/* LOGIN */}
-          <button className="bg-black text-white px-4 py-1 rounded">
-            Login
-          </button>
         </div>
 
         {/* NAVIGATION */}

@@ -46,14 +46,24 @@ export const createArticle = async (article) => {
     image,
     status,
     section,
+    is_breaking,
   } = article;
 
   const result = await pool.query(
     `INSERT INTO articles
-    (title, category, short_description, content, image, status, section)
-    VALUES ($1,$2,$3,$4,$5,$6,$7)
+    (title, category, short_description, content, image, status, section,is_breaking)
+    VALUES ($1,$2,$3,$4,$5,$6,$7,$8)
     RETURNING *`,
-    [title, category, short_description, content, image, status, section],
+    [
+      title,
+      category,
+      short_description,
+      content,
+      image,
+      status,
+      section,
+      is_breaking,
+    ],
   );
 
   return result.rows[0];
@@ -67,15 +77,26 @@ export const updateArticle = async (id, article) => {
     status,
     section,
     image,
+    is_breaking,
   } = article;
 
   const result = await pool.query(
     `UPDATE articles 
        SET title=$1, category=$2, short_description=$3, content=$4,
-           status=$5, section=$6, image=COALESCE($7,image)
-       WHERE id=$8
+           status=$5, section=$6, image=COALESCE($7,image),   is_breaking=$8
+       WHERE id=$9
        RETURNING *`,
-    [title, category, short_description, content, status, section, image, id],
+    [
+      title,
+      category,
+      short_description,
+      content,
+      status,
+      section,
+      image,
+      is_breaking,
+      id,
+    ],
   );
 
   return result.rows[0];
@@ -161,6 +182,19 @@ export const getArticlesByCategory = async (name) => {
     `SELECT * FROM articles WHERE LOWER(category) = LOWER($1)`,
     [name],
   );
+
+  return result.rows;
+};
+// Breaking News
+export const getBreakingNewsService = async () => {
+  const result = await pool.query(`
+    SELECT id, title
+    FROM articles
+    WHERE is_breaking = true
+    AND status = 'published'
+    ORDER BY created_at DESC
+    LIMIT 5
+  `);
 
   return result.rows;
 };

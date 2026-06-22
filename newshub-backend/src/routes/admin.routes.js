@@ -74,13 +74,18 @@ router.get(
 /* ================= ARTICLES (ADMIN) ================= */
 
 // GET ALL (ADMIN)
-router.get("/articles", authMiddleware, permit("admin"), adminArticles);
+router.get(
+  "/articles",
+  authMiddleware,
+  permit("admin", "editor"),
+  adminArticles,
+);
 
 // CREATE
 router.post(
   "/articles",
   authMiddleware,
-  permit("admin"),
+  permit("admin", "editor"),
   upload.single("image"),
   addArticle,
 );
@@ -89,7 +94,7 @@ router.post(
 router.put(
   "/articles/:id",
   authMiddleware,
-  permit("admin"),
+  permit("admin", "editor"),
   upload.single("image"),
   updateArticleController,
 );

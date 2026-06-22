@@ -11,6 +11,7 @@ import {
   deleteArticle,
   searchArticles,
   getArticlesByCategory,
+  getBreakingNewsService,
 } from "../services/articleService.js";
 
 // GET /api/articles/latest
@@ -88,8 +89,15 @@ export const updateArticleController = async (req, res) => {
   try {
     const { id } = req.params;
 
-    const { title, category, short_description, content, status, section } =
-      req.body;
+    const {
+      title,
+      category,
+      short_description,
+      content,
+      status,
+      section,
+      is_breaking,
+    } = req.body;
 
     // SAFE IMAGE HANDLING
     const image = req.file
@@ -104,6 +112,7 @@ export const updateArticleController = async (req, res) => {
       image,
       status,
       section,
+      is_breaking: is_breaking === "true",
     });
 
     res.json({
@@ -150,8 +159,10 @@ export const addArticle = async (req, res) => {
       content: req.body.content,
       status: req.body.status,
       section: req.body.section,
+      is_breaking: req.body.is_breaking === "true",
       image,
     });
+    const result = await createArticle(articleData);
 
     res.status(201).json(article);
   } catch (err) {
@@ -202,5 +213,19 @@ export const categoryArticles = async (req, res) => {
     });
   } catch (err) {
     res.status(500).json({ error: err.message });
+  }
+};
+
+// Breaking News
+
+export const getBreakingNews = async (req, res) => {
+  try {
+    const news = await getBreakingNewsService();
+
+    res.json(news);
+  } catch (err) {
+    res.status(500).json({
+      error: err.message,
+    });
   }
 };

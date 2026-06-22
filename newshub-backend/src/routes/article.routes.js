@@ -11,6 +11,7 @@ import {
   featuredArticles, // ✅ ADD THIS
   secondaryArticles,
   categoryArticles,
+  getBreakingNews,
 } from "../controllers/articleController.js";
 
 import { authMiddleware } from "../middleware/auth.middleware.js";
@@ -28,6 +29,7 @@ router.get("/secondary", secondaryArticles);
 router.get("/latest", latestArticles);
 router.get("/category/:name", categoryArticles);
 router.get("/trending", trendingArticles);
+router.get("/breaking", getBreakingNews);
 
 router.get("/:id", singleArticle);
 
