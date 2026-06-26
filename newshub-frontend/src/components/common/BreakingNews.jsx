@@ -7,7 +7,7 @@ export default function BreakingNews() {
   if (isLoading) {
     return (
       <div className="bg-gray-600 text-white text-sm py-2 px-4">
-        Loading breaking news...
+        breaking news is loading....📰
       </div>
     );
   }
