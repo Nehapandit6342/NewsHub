@@ -10,12 +10,6 @@ export const getAllArticles = async () => {
   return result.rows;
 };
 
-export const getArticleById = async (id) => {
-  const result = await pool.query("SELECT * FROM articles WHERE id = $1", [id]);
-
-  return result.rows[0];
-};
-
 export const createArticle = async (article) => {
   const {
     title,

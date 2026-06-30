@@ -23,8 +23,10 @@ export default function CommentSection({ articleId }) {
   };
 
   return (
-    <div className="mt-12 border-t pt-6">
-      <h2 className="text-xl font-bold mb-4">💬 Comments</h2>
+    <div className="mt-12 border-t border-gray-200 dark:border-gray-700 pt-6">
+      <h2 className="text-xl font-bold mb-4 text-gray-900 dark:text-white">
+        💬 Comments
+      </h2>
 
       {/* FORM */}
       <div className="space-y-3 mb-6">
@@ -32,20 +34,20 @@ export default function CommentSection({ articleId }) {
           value={name}
           onChange={(e) => setName(e.target.value)}
           placeholder="Your name"
-          className="w-full border p-2 rounded"
+          className="w-full rounded border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-gray-900 dark:text-white placeholder-gray-400 dark:placeholder-gray-500 p-2 focus:outline-none focus:ring-2 focus:ring-red-500"
         />
 
         <textarea
           value={comment}
           onChange={(e) => setComment(e.target.value)}
           placeholder="Write a comment..."
-          className="w-full border p-2 rounded"
           rows="3"
+          className="w-full rounded border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-gray-900 dark:text-white placeholder-gray-400 dark:placeholder-gray-500 p-2 focus:outline-none focus:ring-2 focus:ring-red-500"
         />
 
         <button
           onClick={submitComment}
-          className="bg-blue-600 text-white px-4 py-2 rounded"
+          className="bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded transition"
         >
           Post Comment
         </button>
@@ -54,9 +56,15 @@ export default function CommentSection({ articleId }) {
       {/* LIST */}
       <div className="space-y-4">
         {comments.map((c) => (
-          <div key={c.id} className="border-b pb-3">
-            <p className="font-semibold">{c.name}</p>
-            <p className="text-gray-600">{c.comment}</p>
+          <div
+            key={c.id}
+            className="border-b border-gray-200 dark:border-gray-700 pb-3"
+          >
+            <p className="font-semibold text-gray-900 dark:text-white">
+              {c.name}
+            </p>
+
+            <p className="text-gray-600 dark:text-gray-400">{c.comment}</p>
           </div>
         ))}
       </div>

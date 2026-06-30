@@ -2,7 +2,7 @@ import { timeAgo } from "../../utils/timeAgo";
 
 export default function ArticleMeta({ article }) {
   return (
-    <div className="flex items-center gap-3 text-xs text-gray-500 mt-2">
+    <div className="flex items-center gap-3 text-xs text-gray-500 dark:text-gray-400 mt-2">
       <span className="uppercase font-semibold text-red-600">
         {article.category}
       </span>

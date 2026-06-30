@@ -40,7 +40,7 @@ export default function Login() {
           if (data.admin.role === "admin") {
             navigate("/admin/dashboard");
           } else if (data.admin.role === "editor") {
-            navigate("/admin/articles");
+            navigate("/editor");
           } else {
             navigate("/");
           }

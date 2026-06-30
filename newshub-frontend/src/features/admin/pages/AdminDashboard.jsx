@@ -81,7 +81,8 @@ export default function AdminDashboard() {
     }));
   }, [filteredArticles]);
 
-  if (isLoading || statsLoading) return <p>Loading dashboard...</p>;
+  if (isLoading || statsLoading) return;
+  <p className="text-gray-600 dark:text-gray-400">Loading dashboard...</p>;
   if (error) return <p>Failed to load dashboard</p>;
   // pie data
   const publishedCount = filteredArticles.filter(
@@ -94,7 +95,9 @@ export default function AdminDashboard() {
 
   return (
     <div className="space-y-6">
-      <h1 className="text-2xl font-bold">📊 Admin Insights</h1>
+      <h1 className="text-2xl font-bold text-gray-900 dark:text-white">
+        📊 Admin Insights
+      </h1>
 
       {/* FILTER */}
       <div className="flex gap-3">
@@ -102,8 +105,10 @@ export default function AdminDashboard() {
           <button
             key={f}
             onClick={() => setTimeFilter(f)}
-            className={`border px-3 py-1 ${
-              timeFilter === f ? "bg-black text-white" : ""
+            className={`px-3 py-1 rounded border transition ${
+              timeFilter === f
+                ? "bg-red-600 text-white border-red-600"
+                : "border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800"
             }`}
           >
             {f}
@@ -113,24 +118,32 @@ export default function AdminDashboard() {
 
       {/* STATS (NOW USING useAdminStats) */}
       <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-        <div className="bg-blue-100 p-5 rounded shadow">
-          <h2>Total Views</h2>
-          <p className="text-2xl font-bold">{stats.totalViews || 0}</p>
+        <div className="bg-blue-100 dark:bg-gray-800 p-5 rounded-lg shadow border border-blue-200 dark:border-gray-700">
+          <h2 className="text-blue-800 dark:text-gray-400">Total Views</h2>
+          <p className="text-2xl font-bold text-gray-900 dark:text-white">
+            {stats.totalViews || 0}
+          </p>
         </div>
 
-        <div className="bg-white p-5 rounded shadow">
-          <h2>Total Articles</h2>
-          <p className="text-2xl font-bold">{stats.totalArticles || 0}</p>
+        <div className="bg-white dark:bg-gray-800 p-5 rounded-lg shadow border border-gray-200 dark:border-gray-700">
+          <h2 className="text-gray-600 dark:text-gray-400">Total Articles</h2>
+          <p className="text-2xl font-bold text-gray-900 dark:text-white">
+            {stats.totalArticles || 0}
+          </p>
         </div>
 
-        <div className="bg-green-100 p-5 rounded shadow">
-          <h2>Comments</h2>
-          <p className="text-2xl font-bold">{stats.totalComments || 0}</p>
+        <div className="bg-green-100 dark:bg-gray-800 p-5 rounded-lg shadow border border-green-200 dark:border-gray-700">
+          <h2 className="text-green-800 dark:text-gray-400">Comments</h2>
+          <p className="text-2xl font-bold text-green-900 dark:text-white">
+            {stats.totalComments || 0}
+          </p>
         </div>
 
-        <div className="bg-yellow-100 p-5 rounded shadow">
-          <h2>Published / Draft</h2>
-          <p className="text-2xl font-bold">
+        <div className="bg-yellow-100 dark:bg-gray-800 p-5 rounded-lg shadow border border-yellow-200 dark:border-gray-700">
+          <h2 className="text-yellow-800 dark:text-gray-400">
+            Published / Draft
+          </h2>
+          <p className="text-2xl font-bold text-gray-900 dark:text-white">
             {/* fallback calculation if backend doesn't send it */}
             {
               filteredArticles.filter((a) => a.status === "published").length
@@ -139,8 +152,10 @@ export default function AdminDashboard() {
         </div>
       </div>
       {/* LINE CHART */}
-      <div className="bg-white p-5 rounded shadow">
-        <h2 className="font-semibold mb-3">📈 Views Per Article</h2>
+      <div className="bg-white dark:bg-gray-800 p-5 rounded-lg shadow border border-gray-200 dark:border-gray-700">
+        <h2 className="font-semibold mb-3 text-gray-900 dark:text-white">
+          📈 Views Per Article
+        </h2>
 
         <ResponsiveContainer width="100%" height={300}>
           <LineChart data={lineData}>
@@ -154,8 +169,10 @@ export default function AdminDashboard() {
       </div>
 
       {/* PIE */}
-      <div className="bg-white p-5 rounded shadow">
-        <h2 className="font-semibold mb-3">🥧 Content Status</h2>
+      <div className="bg-white dark:bg-gray-800 p-5 rounded-lg shadow border border-gray-200 dark:border-gray-700">
+        <h2 className="font-semibold mb-3 text-gray-900 dark:text-white">
+          🥧 Content Status
+        </h2>
 
         <ResponsiveContainer width="100%" height={300}>
           <PieChart>
@@ -177,8 +194,10 @@ export default function AdminDashboard() {
       </div>
 
       {/* CATEGORY */}
-      <div className="bg-white p-5 rounded shadow">
-        <h2 className="font-semibold mb-3">📊 Category Distribution</h2>
+      <div className="bg-white dark:bg-gray-800 p-5 rounded-lg shadow border border-gray-200 dark:border-gray-700">
+        <h2 className="font-semibold mb-3 text-gray-900 dark:text-white">
+          📊 Category Distribution
+        </h2>
 
         <ResponsiveContainer width="100%" height={300}>
           <BarChart data={categoryData}>
@@ -192,12 +211,19 @@ export default function AdminDashboard() {
       </div>
 
       {/* TOP TRENDING */}
-      <div className="bg-white p-5 rounded shadow">
-        <h2 className="text-lg font-semibold mb-3">🔥 Top Trending</h2>
+      <div className="bg-white dark:bg-gray-800 p-5 rounded-lg shadow border border-gray-200 dark:border-gray-700">
+        <h2 className="text-lg font-semibold mb-3 text-gray-900 dark:text-white">
+          🔥 Top Trending
+        </h2>
 
         {topTrending.map((item) => (
-          <div key={item.id} className="flex justify-between border-b py-2">
-            <span className="text-sm">{item.title}</span>
+          <div
+            key={item.id}
+            className="flex justify-between border-b border-gray-200 dark:border-gray-700 py-2"
+          >
+            <span className="text-sm text-gray-900 dark:text-white">
+              {item.title}
+            </span>
             <span className="text-blue-600 font-bold">
               {item.views || 0} views
             </span>

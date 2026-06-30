@@ -3,6 +3,7 @@ import {
   createEditorService,
   deleteEditorService,
 } from "../services/editor.service.js";
+import { sendEditorWelcomeEmail } from "../utils/editorEmail.js";
 
 // GET EDITORS
 export const getEditorsController = async (req, res) => {
@@ -20,8 +21,14 @@ export const createEditorController = async (req, res) => {
 
     const editor = await createEditorService(name, email, password);
 
-    res.status(201).json(editor);
+    // send email AFTER creation
+    await sendEditorWelcomeEmail(email, password);
+    res.status(201).json({
+      message: "Editor created and email sent",
+      editor,
+    });
   } catch (err) {
+    console.error(err);
     res.status(400).json({ error: err.message });
   }
 };

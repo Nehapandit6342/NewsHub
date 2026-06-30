@@ -1,50 +1,48 @@
-import pool from "../../config/db.js";
+import {
+  getAllCommentsService,
+  updateCommentStatusService,
+  deleteCommentService,
+} from "../../services/commentService.js";
 
 export const getAllComments = async (req, res) => {
   try {
-    const result = await pool.query(`
-      SELECT 
-        c.id,
-          c.article_id,  
-        c.name,
-        c.comment,
-        c.status,
-        c.created_at,
-        a.title AS article_title,
-         a.image AS article_image
-      FROM comments c
-      JOIN articles a ON a.id = c.article_id
-      ORDER BY c.created_at DESC
-    `);
+    const comments = await getAllCommentsService();
 
-    res.json(result.rows);
+    res.json(comments);
   } catch (err) {
-    res.status(500).json({ error: err.message });
+    res.status(500).json({
+      error: err.message,
+    });
   }
 };
+
 export const updateCommentStatus = async (req, res) => {
   try {
     const { id } = req.params;
     const { status } = req.body;
 
-    const result = await pool.query(
-      "UPDATE comments SET status = $1 WHERE id = $2 RETURNING *",
-      [status, id],
-    );
+    const comment = await updateCommentStatusService(id, status);
 
-    res.json(result.rows[0]);
+    res.json(comment);
   } catch (err) {
-    res.status(500).json({ error: err.message });
+    res.status(500).json({
+      error: err.message,
+    });
   }
 };
+
 export const deleteComment = async (req, res) => {
   try {
     const { id } = req.params;
 
-    await pool.query("DELETE FROM comments WHERE id = $1", [id]);
+    await deleteCommentService(id);
 
-    res.json({ success: true });
+    res.json({
+      success: true,
+    });
   } catch (err) {
-    res.status(500).json({ error: err.message });
+    res.status(500).json({
+      error: err.message,
+    });
   }
 };

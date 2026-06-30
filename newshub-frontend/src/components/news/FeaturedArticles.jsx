@@ -6,7 +6,11 @@ export default function FeaturedArticles() {
   const { data = [], isLoading, isError } = useFeaturedArticles();
 
   if (isLoading)
-    return <p className="text-gray-500">Loading featured news...</p>;
+    return (
+      <p className="text-gray-500 dark:text-gray-400">
+        Loading featured news...
+      </p>
+    );
 
   if (isError)
     return <p className="text-red-500">Failed to load featured news</p>;
@@ -18,9 +22,9 @@ export default function FeaturedArticles() {
     <section className="mb-8">
       <Link
         to={`/article/${featured.id}`}
-        className="block rounded-xl overflow-hidden border hover:shadow-md transition"
+        className="block rounded-xl overflow-hidden border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-900 hover:shadow-md transition"
       >
-        {/* IMAGE (BIGGER FEATURED STYLE) */}
+        {/* IMAGE */}
         <div className="w-full h-[320px] md:h-[380px] overflow-hidden">
           <img
             src={featured.image || "/placeholder.jpg"}
@@ -35,17 +39,17 @@ export default function FeaturedArticles() {
           <ArticleMeta article={featured} />
 
           {/* TITLE */}
-          <h2 className="text-2xl md:text-3xl font-bold text-gray-900 leading-snug">
+          <h2 className="text-2xl md:text-3xl font-bold text-gray-900 dark:text-white leading-snug">
             {featured.title}
           </h2>
 
           {/* DESCRIPTION */}
-          <p className="text-gray-600 text-base line-clamp-3">
+          <p className="text-gray-600 dark:text-gray-400 text-base line-clamp-3">
             {featured.short_description}
           </p>
 
           {/* CTA */}
-          <span className="inline-block text-sm font-medium text-black hover:underline">
+          <span className="inline-block text-sm font-medium text-black dark:text-white hover:underline">
             Read full story →
           </span>
         </div>

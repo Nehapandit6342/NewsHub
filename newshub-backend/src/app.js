@@ -8,6 +8,7 @@ import authRoutes from "./routes/auth.routes.js";
 import commentRoutes from "./routes/comment.routes.js";
 import adminCommentRoutes from "./routes/adminComment.routes.js";
 import editorRoutes from "./routes/editor.routes.js";
+import subscriberRoutes from "./routes/subscriberRoutes.js";
 const app = express();
 
 app.use(cors());
@@ -26,6 +27,7 @@ app.use("/api/admin", adminRoutes);
 app.use("/api/editors", editorRoutes);
 app.use("/api/auth", authRoutes);
 app.use("/uploads", express.static("uploads"));
+app.use("/api/subscribers", subscriberRoutes);
 app.use("/api/comments", commentRoutes);
 app.use((err, req, res, next) => {
   if (err instanceof multer.MulterError) {

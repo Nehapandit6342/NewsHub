@@ -10,6 +10,7 @@ import { useCategoryArticles } from "../features/articles/hooks/useCategoryArtic
 import CommentSection from "../features/comments/components/CommentSection";
 import { useComments } from "../features/articles/hooks/useComments";
 import { useAddComment } from "../features/articles/hooks/useAddComment";
+import { FiShare2, FiFacebook, FiTwitter, FiLink } from "react-icons/fi";
 
 export default function ArticlePage() {
   const { id } = useParams();
@@ -41,7 +42,7 @@ export default function ArticlePage() {
   if (isLoading) {
     return (
       <div className="max-w-4xl mx-auto px-4 py-10">
-        <p className="text-gray-500">Loading article...</p>
+        <p className="text-gray-500 dark:text-gray-400">Loading article...</p>
       </div>
     );
   }
@@ -54,45 +55,98 @@ export default function ArticlePage() {
       </div>
     );
   }
+  //. share icon
+  const handleShare = async () => {
+    const shareData = {
+      title: article.title,
+      text: article.short_description,
+      url: window.location.href,
+    };
 
+    if (navigator.share) {
+      await navigator.share(shareData);
+    } else {
+      navigator.clipboard.writeText(window.location.href);
+      alert("Link copied!");
+    }
+  };
   return (
     <main className="max-w-6xl mx-auto px-4 py-10 grid grid-cols-12 gap-10">
       {/* MAIN ARTICLE */}
       <article className="col-span-12 lg:col-span-8">
-        <div className="mb-4">
-          <span className="text-red-600 font-semibold uppercase text-sm">
-            {article.category}
-          </span>
+        {/* CATEGORY */}
+        <span className="text-red-600 font-semibold uppercase tracking-wide text-sm">
+          {article.category}
+        </span>
 
-          <div className="flex items-center gap-3 text-sm text-gray-500 mt-1">
-            <span>{timeAgo(article.created_at)}</span>
-            <span>•</span>
-            <span>{article.views || 0} views</span>
-          </div>
-        </div>
-
-        <h1 className="text-4xl md:text-5xl font-bold leading-tight text-gray-900">
+        {/* TITLE */}
+        <h1 className="text-4xl md:text-5xl font-extrabold leading-tight text-gray-900 dark:text-white mt-3">
           {article.title}
         </h1>
 
-        <p className="text-lg text-gray-600 mt-4">
+        {/* SHORT DESCRIPTION */}
+        <p className="text-lg text-gray-600 dark:text-gray-400 mt-4 border-l-4 border-red-500 pl-4">
           {article.short_description}
         </p>
 
+        {/* META */}
+        <div className="flex flex-wrap items-center justify-between gap-4 mt-6 pb-6 border-b border-gray-200 dark:border-gray-700">
+          <div className="flex flex-wrap items-center gap-3 text-sm text-gray-500 dark:text-gray-400">
+            <span>
+              By{" "}
+              <span className="font-semibold text-gray-800 dark:text-white">
+                {article.editor_name}
+              </span>
+            </span>
+
+            <span>•</span>
+
+            <span>{timeAgo(article.created_at)}</span>
+
+            <span>•</span>
+
+            <span>{article.views || 0} views</span>
+          </div>
+
+          <button
+            onClick={handleShare}
+            className="flex items-center gap-2 px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-800 text-gray-900 dark:text-white transition"
+          >
+            <FiShare2 />
+            Share
+          </button>
+        </div>
+
+        {/* IMAGE */}
         {article.image && (
-          <div className="mt-6">
+          <div className="mt-8">
             <img
               src={article.image}
-              className="w-full h-[450px] object-cover rounded-xl"
+              alt={article.title}
+              className="w-full h-[250px] md:h-[500px] object-cover rounded-2xl shadow-md"
             />
           </div>
         )}
 
+        {/* CONTENT */}
         <div
-          className="prose mt-8"
+          className="
+prose
+prose-lg
+dark:prose-invert
+max-w-none
+mt-10
+prose-headings:font-bold
+prose-img:rounded-xl
+prose-a:text-red-600
+"
           dangerouslySetInnerHTML={{ __html: article.content || "" }}
         />
-        <CommentSection articleId={id} />
+
+        {/* COMMENTS */}
+        <div className="mt-12 border-t border-gray-200 dark:border-gray-700 pt-8">
+          <CommentSection articleId={id} />
+        </div>
       </article>
 
       {/* SIDEBAR */}
@@ -100,8 +154,8 @@ export default function ArticlePage() {
         <div className="sticky top-24 space-y-8">
           {/* TRENDING */}
           <div>
-            <h2 className="font-bold text-lg border-b pb-2 mb-4">
-              🔥 Trending Now
+            <h2 className="font-bold text-lg border-b border-gray-200 dark:border-gray-700 pb-2 mb-4 text-gray-900 dark:text-white">
+              Trending Now
             </h2>
 
             <div className="space-y-3">
@@ -109,7 +163,7 @@ export default function ArticlePage() {
                 <Link
                   key={item.id}
                   to={`/article/${item.id}`}
-                  className="flex gap-3 p-2 hover:bg-gray-50 rounded"
+                  className="flex gap-3 p-2 rounded hover:bg-gray-100 dark:hover:bg-gray-800 transition"
                 >
                   <img
                     src={item.image || "/placeholder.jpg"}
@@ -117,11 +171,13 @@ export default function ArticlePage() {
                   />
 
                   <div>
-                    <h3 className="text-sm font-semibold line-clamp-2">
+                    <h3 className="text-sm font-semibold line-clamp-2 text-gray-900 dark:text-white">
                       {item.title}
                     </h3>
 
-                    <p className="text-xs text-gray-500">{item.category}</p>
+                    <p className="text-xs text-gray-500 dark:text-gray-400">
+                      {item.category}
+                    </p>
                   </div>
                 </Link>
               ))}
@@ -130,7 +186,7 @@ export default function ArticlePage() {
 
           {/* RELATED */}
           <div>
-            <h2 className="font-bold text-lg border-b pb-2 mb-4">
+            <h2 className="font-bold text-lg border-b border-gray-200 dark:border-gray-700 pb-2 mb-4 text-gray-900 dark:text-white">
               More from {article.category}
             </h2>
 
@@ -139,7 +195,7 @@ export default function ArticlePage() {
                 <Link
                   key={item.id}
                   to={`/article/${item.id}`}
-                  className="flex gap-3 p-2 hover:bg-gray-50 rounded"
+                  className="flex gap-3 p-2 rounded hover:bg-gray-100 dark:hover:bg-gray-800 transition"
                 >
                   <img
                     src={item.image || "/placeholder.jpg"}
@@ -147,11 +203,11 @@ export default function ArticlePage() {
                   />
 
                   <div>
-                    <h3 className="text-sm font-semibold line-clamp-2">
+                    <h3 className="text-sm font-semibold line-clamp-2 text-gray-900 dark:text-white">
                       {item.title}
                     </h3>
 
-                    <p className="text-xs text-gray-500">
+                    <p className="text-xs text-gray-500 dark:text-gray-400">
                       {timeAgo(item.created_at)}
                     </p>
                   </div>

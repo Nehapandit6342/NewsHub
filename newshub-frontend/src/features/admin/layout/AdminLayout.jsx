@@ -1,5 +1,6 @@
 import { Outlet, NavLink, useNavigate } from "react-router-dom";
 import { getRole } from "@/utils/token";
+import ThemeToggle from "../../../components/ThemeToggle";
 
 export default function AdminLayout() {
   const role = getRole();
@@ -7,7 +8,9 @@ export default function AdminLayout() {
 
   const linkClass = ({ isActive }) =>
     `px-4 py-2 rounded-md text-sm font-medium transition ${
-      isActive ? "bg-black text-white" : "text-gray-600 hover:bg-gray-200"
+      isActive
+        ? "bg-red-600 text-white"
+        : "text-gray-700 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-800"
     }`;
 
   const logout = () => {
@@ -17,14 +20,24 @@ export default function AdminLayout() {
   };
 
   return (
-    <div className="flex h-screen bg-gray-100">
+    <div className="flex h-screen bg-gray-100 dark:bg-gray-900">
       {/* SIDEBAR */}
-      <aside className="w-64 bg-white border-r flex flex-col justify-between">
+      <aside className="w-64 bg-white dark:bg-gray-950 border-r border-gray-200 dark:border-gray-800 flex flex-col justify-between">
         <div>
-          <div className="p-6 border-b">
-            <h1 className="text-lg font-semibold">NewsHub CMS</h1>
+          <div className="p-6 border-b border-gray-200 dark:border-gray-800">
+            <div className="flex items-center justify-between">
+              <div>
+                <h1 className="text-lg font-semibold text-gray-900 dark:text-white">
+                  NewsHub CMS
+                </h1>
 
-            <p className="text-xs text-gray-500 mt-1 capitalize">{role}</p>
+                <p className="text-xs text-gray-500 dark:text-gray-400 mt-1 capitalize">
+                  {role}
+                </p>
+              </div>
+
+              <ThemeToggle />
+            </div>
           </div>
 
           <nav className="p-3 flex flex-col gap-1">
@@ -52,10 +65,10 @@ export default function AdminLayout() {
           </nav>
         </div>
 
-        <div className="p-4 border-t">
+        <div className="p-4 border-t border-gray-200 dark:border-gray-800">
           <button
             onClick={logout}
-            className="w-full text-red-500 hover:text-red-600 text-sm"
+            className="w-full text-red-600 hover:text-red-700 dark:text-red-500 dark:hover:text-red-400 text-sm transition"
           >
             Logout
           </button>
@@ -63,7 +76,7 @@ export default function AdminLayout() {
       </aside>
 
       {/* MAIN CONTENT */}
-      <main className="flex-1 overflow-y-auto p-6">
+      <main className="flex-1 overflow-y-auto p-6 bg-gray-50 dark:bg-gray-900 text-gray-900 dark:text-white">
         <Outlet />
       </main>
     </div>

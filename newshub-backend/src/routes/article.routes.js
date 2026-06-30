@@ -12,6 +12,7 @@ import {
   secondaryArticles,
   categoryArticles,
   getBreakingNews,
+  editorArticles,
 } from "../controllers/articleController.js";
 
 import { authMiddleware } from "../middleware/auth.middleware.js";
@@ -33,6 +34,13 @@ router.get("/breaking", getBreakingNews);
 
 router.get("/:id", singleArticle);
 
+// Editor-specific articles
+router.get(
+  "/editor/articles",
+  authMiddleware,
+  permit("editor", "admin"),
+  editorArticles,
+);
 // PROTECTED ADMIN ROUTES
 
 router.put(

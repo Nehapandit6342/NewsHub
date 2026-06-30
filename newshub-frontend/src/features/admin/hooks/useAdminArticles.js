@@ -1,9 +1,14 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { toast } from "react-toastify";
+
 import {
   getAdminArticles,
   createArticle,
   updateArticle,
   deleteArticle,
+  bulkDeleteArticles,
+  bulkArchiveArticles,
+  approveArticle,
 } from "../services/adminArticles.api";
 
 // GET
@@ -25,6 +30,9 @@ export const useCreateArticle = () => {
       queryClient.invalidateQueries({
         queryKey: ["admin-articles"],
       });
+      queryClient.invalidateQueries({
+        queryKey: ["editor-articles"],
+      });
     },
   });
 };
@@ -39,6 +47,9 @@ export const useUpdateArticle = () => {
       queryClient.invalidateQueries({
         queryKey: ["admin-articles"],
       });
+      queryClient.invalidateQueries({
+        queryKey: ["editor-articles"],
+      });
     },
   });
 };
@@ -52,6 +63,61 @@ export const useDeleteArticle = () => {
     onSuccess: () => {
       queryClient.invalidateQueries({
         queryKey: ["admin-articles"],
+      });
+    },
+  });
+};
+
+// Bulk delete
+
+export const useBulkDeleteArticles = () => {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: bulkDeleteArticles,
+
+    onSuccess: () => {
+      queryClient.invalidateQueries(["admin-articles"]);
+    },
+  });
+};
+
+// BULK ARCHIEVE
+export const useBulkArchiveArticles = () => {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: bulkArchiveArticles,
+
+    onSuccess: () => {
+      toast.success("Articles archived successfully");
+
+      // refresh list
+      queryClient.invalidateQueries(["admin-articles"]);
+    },
+
+    onError: () => {
+      toast.error("Failed to archive articles");
+    },
+  });
+};
+// approve articles
+
+export const useApproveArticle = () => {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: approveArticle,
+
+    onSuccess: () => {
+      toast.success("Article approved");
+
+      queryClient.invalidateQueries({
+        queryKey: ["admin-articles"],
+      });
+
+      queryClient.invalidateQueries({
+        queryKey: ["editor-articles"],
       });
     },
   });

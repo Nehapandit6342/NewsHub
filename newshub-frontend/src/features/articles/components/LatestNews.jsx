@@ -9,8 +9,10 @@ export default function LatestNews() {
   if (isLoading) {
     return (
       <section>
-        <h2 className="text-2xl font-bold mb-4">Latest News</h2>
-        <p className="text-gray-500">Loading...</p>
+        <h2 className="text-2xl font-bold mb-4 text-gray-900 dark:text-white">
+          Latest News
+        </h2>
+        <p className="text-gray-500 dark:text-gray-400">Loading...</p>
       </section>
     );
   }
@@ -18,7 +20,9 @@ export default function LatestNews() {
   if (isError) {
     return (
       <section>
-        <h2 className="text-2xl font-bold mb-4">Latest News</h2>
+        <h2 className="text-2xl font-bold mb-4 text-gray-900 dark:text-white">
+          Latest News
+        </h2>
         <p className="text-red-500">Failed to load articles</p>
       </section>
     );

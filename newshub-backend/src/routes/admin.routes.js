@@ -1,5 +1,6 @@
 import express from "express";
 import { authMiddleware } from "../middleware/auth.middleware.js";
+
 import { permit } from "../middleware/role.middleware.js";
 import upload from "../config/multer.js";
 import pool from "../config/db.js";
@@ -9,6 +10,9 @@ import {
   updateArticleController,
   deleteArticleController,
   addArticle,
+  bulkDeleteArticles,
+  bulkArchiveArticles,
+  approveArticleController,
 } from "../controllers/articleController.js";
 
 const router = express.Router();
@@ -98,13 +102,24 @@ router.put(
   upload.single("image"),
   updateArticleController,
 );
+router.delete("/articles/bulk", bulkDeleteArticles);
 
+// routes/adminArticles.routes.js
+router.patch("/articles/bulk-archive", bulkArchiveArticles);
 // DELETE
 router.delete(
   "/articles/:id",
   authMiddleware,
   permit("admin"),
   deleteArticleController,
+);
+
+//approve
+router.patch(
+  "/articles/:id/approve",
+  authMiddleware,
+  permit("admin"),
+  approveArticleController,
 );
 
 export default router;

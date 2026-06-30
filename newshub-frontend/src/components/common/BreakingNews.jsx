@@ -12,22 +12,30 @@ export default function BreakingNews() {
     );
   }
 
-  if (error) {
+  if (error || !data?.length) {
     return null;
   }
 
   return (
     <div className="bg-gray-600 text-white text-sm overflow-hidden">
-      <div className="flex whitespace-nowrap animate-marquee py-2">
-        {data?.map((item) => (
-          <Link
-            key={item.id}
-            to={`/article/${item.id}`}
-            className="mx-8 hover:underline"
-          >
-            🔴 {item.title}
-          </Link>
-        ))}
+      <div className="flex items-center">
+        {/* FIXED LABEL */}
+        <div className="bg-black px-4 py-2 font-bold z-10">🔴 Breaking</div>
+
+        {/* MOVING NEWS */}
+        <div className="overflow-hidden flex-1">
+          <div className="flex whitespace-nowrap animate-marquee hover:[animation-play-state:paused] py-2">
+            {data.map((item) => (
+              <Link
+                key={item.id}
+                to={`/article/${item.id}`}
+                className="mx-8 hover:underline"
+              >
+                {item.title}
+              </Link>
+            ))}
+          </div>
+        </div>
       </div>
     </div>
   );

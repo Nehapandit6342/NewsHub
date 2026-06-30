@@ -29,15 +29,23 @@ export const getSecondaryArticles = async () => {
 };
 
 export const getArticleById = async (id) => {
-  // 1. increase views
-
-  // 2. fetch article
-  const result = await pool.query("SELECT * FROM articles WHERE id = $1", [id]);
+  const result = await pool.query(
+    `
+    SELECT
+      a.*,
+      ad.name AS editor_name
+    FROM articles a
+    LEFT JOIN admins ad
+      ON a.editor_id = ad.id
+    WHERE a.id = $1
+    `,
+    [id],
+  );
 
   return result.rows[0];
 };
 
-export const createArticle = async (article) => {
+export const createArticle = async (article, editorId) => {
   const {
     title,
     category,
@@ -47,12 +55,13 @@ export const createArticle = async (article) => {
     status,
     section,
     is_breaking,
+    editor_id,
   } = article;
 
   const result = await pool.query(
     `INSERT INTO articles
-    (title, category, short_description, content, image, status, section,is_breaking)
-    VALUES ($1,$2,$3,$4,$5,$6,$7,$8)
+    (title, category, short_description, content, image, status, section,is_breaking,editor_id)
+    VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9)
     RETURNING *`,
     [
       title,
@@ -63,6 +72,7 @@ export const createArticle = async (article) => {
       status,
       section,
       is_breaking,
+      editor_id,
     ],
   );
 
@@ -166,12 +176,16 @@ export const getPublishedArticles = async (limit, offset, category) => {
 // Admin
 export const getAllArticles = async (limit, offset) => {
   const result = await pool.query(
-    ` SELECT *
-    FROM articles
-  
-    ORDER BY id DESC
+    `
+    SELECT
+      a.*,
+      ad.name AS editor_name
+    FROM articles a
+    LEFT JOIN admins ad
+      ON a.editor_id = ad.id
+    ORDER BY a.id DESC
     LIMIT $1 OFFSET $2
-  `,
+    `,
     [limit, offset],
   );
   return result.rows;
@@ -197,4 +211,64 @@ export const getBreakingNewsService = async () => {
   `);
 
   return result.rows;
+};
+
+// Bulk Delete Articles
+export const bulkDeleteArticlesService = async (ids) => {
+  if (!ids || ids.length === 0) {
+    throw new Error("No IDs provided");
+  }
+
+  const result = await pool.query(
+    `DELETE FROM articles WHERE id = ANY($1) RETURNING *`,
+    [ids],
+  );
+
+  return result.rows;
+};
+
+export const bulkArchiveArticlesService = async (ids) => {
+  const query = `
+    UPDATE articles
+    SET status = 'archive'
+    WHERE id = ANY($1)
+    RETURNING *
+  `;
+
+  const result = await pool.query(query, [ids]);
+  return result.rows;
+};
+
+// editor only articles
+export const getEditorArticles = async (editorId) => {
+  const result = await pool.query(
+    `
+    SELECT
+      a.*,
+      ad.name AS editor_name
+    FROM articles a
+    LEFT JOIN admins ad
+      ON a.editor_id = ad.id
+    WHERE a.editor_id = $1
+    ORDER BY a.id DESC
+    `,
+    [editorId],
+  );
+
+  return result.rows;
+};
+
+// approve
+export const approveArticleService = async (id) => {
+  const result = await pool.query(
+    `
+    UPDATE articles
+    SET status = 'published'
+    WHERE id = $1
+    RETURNING *
+    `,
+    [id],
+  );
+
+  return result.rows[0];
 };

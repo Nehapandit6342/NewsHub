@@ -8,7 +8,9 @@ export default function SecondaryStories() {
   if (isLoading) {
     return (
       <section className="grid md:grid-cols-2 gap-6">
-        <p className="text-gray-500">Loading secondary stories...</p>
+        <p className="text-gray-500 dark:text-gray-400">
+          Loading secondary stories...
+        </p>
       </section>
     );
   }
@@ -27,7 +29,7 @@ export default function SecondaryStories() {
         <Link
           key={story.id}
           to={`/article/${story.id}`}
-          className="border rounded-lg overflow-hidden hover:shadow-lg transition block"
+          className="block overflow-hidden rounded-lg border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-900 hover:shadow-lg transition"
         >
           {/* IMAGE */}
           <img
@@ -37,16 +39,16 @@ export default function SecondaryStories() {
           />
 
           <div className="p-4 space-y-2">
-            {/* META (NEW) */}
+            {/* META */}
             <ArticleMeta article={story} />
 
             {/* TITLE */}
-            <h2 className="font-bold text-lg leading-snug hover:text-black">
+            <h2 className="font-bold text-lg leading-snug text-gray-900 dark:text-white hover:text-black dark:hover:text-gray-200">
               {story.title}
             </h2>
 
             {/* DESCRIPTION */}
-            <p className="text-sm text-gray-600 line-clamp-2">
+            <p className="text-sm text-gray-600 dark:text-gray-400 line-clamp-2">
               {story.short_description}
             </p>
           </div>

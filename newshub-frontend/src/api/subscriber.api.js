@@ -1,17 +1,9 @@
-import axios from "axios";
+import api from "./axios";
 
+export const subscribeUser = async (email) => {
+  const response = await api.post("/subscribers", {
+    email,
+  });
 
-const API="http://localhost:5000/api/subscribers";
-
-
-export const subscribeUser = async(email)=>{
-
-const response =
-await axios.post(API,{
-email
-});
-
-
-return response.data;
-
+  return response.data;
 };

@@ -12,6 +12,10 @@ import {
   searchArticles,
   getArticlesByCategory,
   getBreakingNewsService,
+  bulkDeleteArticlesService,
+  bulkArchiveArticlesService,
+  getEditorArticles,
+  approveArticleService,
 } from "../services/articleService.js";
 
 // GET /api/articles/latest
@@ -152,6 +156,7 @@ export const addArticle = async (req, res) => {
       ? `http://localhost:5000/uploads/${req.file.filename}`
       : null;
 
+    const editorId = req.user.id; //  from JWT
     const article = await createArticle({
       title: req.body.title,
       category: req.body.category,
@@ -161,8 +166,8 @@ export const addArticle = async (req, res) => {
       section: req.body.section,
       is_breaking: req.body.is_breaking === "true",
       image,
+      editor_id: req.user.id,
     });
-    const result = await createArticle(articleData);
 
     res.status(201).json(article);
   } catch (err) {
@@ -186,7 +191,7 @@ export const searchArticleController = async (req, res) => {
 export const adminArticles = async (req, res) => {
   try {
     const page = parseInt(req.query.page) || 1;
-    const limit = parseInt(req.query.limit) || 10;
+    const limit = parseInt(req.query.limit) || 1000;
 
     const offset = (page - 1) * limit;
 
@@ -225,6 +230,89 @@ export const getBreakingNews = async (req, res) => {
     res.json(news);
   } catch (err) {
     res.status(500).json({
+      error: err.message,
+    });
+  }
+};
+
+// BULK DELETE ARTICLES
+
+export const bulkDeleteArticles = async (req, res) => {
+  try {
+    console.log("DELETE BODY:", req.body);
+    const { ids } = req.body;
+
+    const deletedArticles = await bulkDeleteArticlesService(ids);
+
+    res.json({
+      success: true,
+      message: "Articles deleted successfully",
+      deletedCount: deletedArticles.length,
+    });
+  } catch (err) {
+    console.error(err);
+    res.status(400).json({
+      success: false,
+      error: err.message,
+    });
+  }
+};
+// bulk archieve
+export const bulkArchiveArticles = async (req, res) => {
+  try {
+    console.log("ARCHIVE BODY:", req.body);
+    const { ids } = req.body;
+
+    if (!ids || !Array.isArray(ids) || ids.length === 0) {
+      return res.status(400).json({
+        message: "No articles provided",
+      });
+    }
+
+    const updatedArticles = await bulkArchiveArticlesService(ids);
+
+    return res.status(200).json({
+      message: "Articles archived successfully",
+      data: updatedArticles,
+    });
+  } catch (error) {
+    console.error("Bulk archive error:", error);
+    return res.status(500).json({
+      message: "Server error",
+    });
+  }
+};
+
+// editor articles
+export const editorArticles = async (req, res) => {
+  try {
+    const editorId = req.user.id;
+
+    const data = await getEditorArticles(editorId);
+
+    res.json({
+      success: true,
+      data,
+    });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+};
+// approve
+export const approveArticleController = async (req, res) => {
+  try {
+    const { id } = req.params;
+
+    const article = await approveArticleService(id);
+
+    res.json({
+      success: true,
+      message: "Article approved successfully",
+      data: article,
+    });
+  } catch (err) {
+    res.status(500).json({
+      success: false,
       error: err.message,
     });
   }

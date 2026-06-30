@@ -1,38 +1,36 @@
-import pool from "../config/db.js";
+import {
+  createCommentService,
+  getCommentsByArticleService,
+} from "../services/commentService.js";
 
 export const addComment = async (req, res) => {
   try {
     const { article_id, name, comment } = req.body;
 
-    const result = await pool.query(
-      `INSERT INTO comments (article_id, name, comment, status)
-       VALUES ($1, $2, $3, $4)
-       RETURNING *`,
-      [article_id, name, comment, "visible"],
-    );
+    const newComment = await createCommentService(article_id, name, comment);
 
-    // realtime emit
     const io = req.app.get("io");
-    io.to(`article_${article_id}`).emit("receive_comment", result.rows[0]);
 
-    res.status(201).json(result.rows[0]);
+    io.to(`article_${article_id}`).emit("receive_comment", newComment);
+
+    res.status(201).json(newComment);
   } catch (err) {
-    res.status(500).json({ error: err.message });
+    res.status(500).json({
+      error: err.message,
+    });
   }
 };
+
 export const getComments = async (req, res) => {
   try {
     const { articleId } = req.params;
 
-    const result = await pool.query(
-      `SELECT * FROM comments 
-       WHERE article_id = $1 
-       ORDER BY created_at DESC`,
-      [articleId],
-    );
+    const comments = await getCommentsByArticleService(articleId);
 
-    res.json(result.rows);
+    res.json(comments);
   } catch (err) {
-    res.status(500).json({ error: err.message });
+    res.status(500).json({
+      error: err.message,
+    });
   }
 };
